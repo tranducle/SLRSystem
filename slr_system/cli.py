@@ -1,4 +1,4 @@
-"""Command line interface for SLR System."""
+""""Command line interface for SLR System."""
 
 import os
 import csv
@@ -67,10 +67,13 @@ def import_csv(project_id: int, file: str):
 
 
 @app.command()
-def refine(search_string: str):
-    """Refine a search string using OpenAI."""
+def refine(
+    search_string: str, 
+    provider: str = typer.Option("auto", help="AI provider: openai or openrouter")
+):
+    """Refine a search string using an AI provider."""
     try:
-        refined = refine_search_string(search_string)
+        refined = refine_search_string(search_string, provider)
         print(refined)
     except RuntimeError as exc:
         print(f"[red]Error:[/red] {exc}")
@@ -90,7 +93,11 @@ def add_pdf(study_id: int, pdf_path: str):
 
 
 @app.command()
-def ask(study_id: int, question: str):
+def ask(
+    study_id: int,
+    question: str,
+    provider: str = typer.Option("auto", help="AI provider: openai or openrouter"),
+):
     """Ask a question about the study's PDF."""
     session = get_db()
     study = session.query(Study).get(study_id)
@@ -100,7 +107,7 @@ def ask(study_id: int, question: str):
 
     text = extract_text(study.pdf_path)
     try:
-        answer = ask_question_about_text(text, question)
+        answer = ask_question_about_text(text, question, provider)
         print(answer)
     except RuntimeError as exc:
         print(f"[red]Error:[/red] {exc}")
