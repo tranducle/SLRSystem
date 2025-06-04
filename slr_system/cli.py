@@ -1,4 +1,4 @@
-"""Command line interface for SLR System."""
+""""Command line interface for SLR System."""
 
 import os
 import csv
@@ -67,7 +67,10 @@ def import_csv(project_id: int, file: str):
 
 
 @app.command()
-def refine(search_string: str, provider: str = typer.Option("auto", help="AI provider: openai or openrouter")):
+def refine(
+    search_string: str, 
+    provider: str = typer.Option("auto", help="AI provider: openai or openrouter")
+):
     """Refine a search string using an AI provider."""
     try:
         refined = refine_search_string(search_string, provider)
